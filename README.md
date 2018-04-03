@@ -7,10 +7,12 @@ acct := acctBase.PathPrefix("/account").Subrouter()
 acct.Path("/movies").HandlerFunc(CreateMovieEndPoint).Methods("POST")
 ```
 
-/account os the sub-route that requires jwt verification and /movies is the regular route
+```/account``` is the sub-route that requires jwt verification and ```/movies``` is the regular route
 
 ###  Generate RSA signing files via shell (adjust as needed):
 
+```
 $ openssl genrsa -out app.rsa 1024
 
 $ openssl rsa -in app.rsa -pubout > app.rsa.pub
+```
