@@ -22,7 +22,7 @@ var dao = MoviesDAO{}
 var auth = Auth{}
 var user = UserCredentials{}
 
-// POST login JWT
+// LoginEndPoint : POST login JWT
 func LoginEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -50,7 +50,7 @@ func LoginEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, map[string]string{"Token": token})
 }
 
-// GET list of movies
+// AllMoviesEndPoint : GET list of movies
 func AllMoviesEndPoint(w http.ResponseWriter, r *http.Request) {
 	movies, err := dao.FindAll()
 	if err != nil {
@@ -60,7 +60,7 @@ func AllMoviesEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, movies)
 }
 
-// GET a movie by its ID
+// FindMovieEndpoint : GET a movie by its ID
 func FindMovieEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	movie, err := dao.FindById(params["id"])
@@ -71,7 +71,7 @@ func FindMovieEndpoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, movie)
 }
 
-// POST a new movie
+// CreateMovieEndPoint : POST a new movie
 func CreateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var movie Movie
@@ -87,7 +87,7 @@ func CreateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusCreated, movie)
 }
 
-// PUT update an existing movie
+// UpdateMovieEndPoint : PUT update an existing movie
 func UpdateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var movie Movie
@@ -102,7 +102,7 @@ func UpdateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
-// DELETE an existing movie
+// DeleteMovieEndPoint : DELETE an existing movie
 func DeleteMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var movie Movie
@@ -152,15 +152,14 @@ func main() {
 	// Account subrouter - routes
 	acct := acctBase.PathPrefix("/account").Subrouter()
 	acct.Path("/movies").HandlerFunc(CreateMovieEndPoint).Methods("POST")
-	acct.Path("/movies/{id}").HandlerFunc(FindMovieEndpoint).Methods("GET") // path can't fetch var {id}
+	acct.Path("/movies").HandlerFunc(UpdateMovieEndPoint).Methods("PUT")
+	acct.Path("/movies").HandlerFunc(DeleteMovieEndPoint).Methods("DELETE")
+	acct.Path("/movies/{id}").HandlerFunc(FindMovieEndpoint).Methods("GET")
+	acct.Path("/movies").HandlerFunc(AllMoviesEndPoint).Methods("GET")
 
 	// Public routes
 	r.HandleFunc("/login", LoginEndPoint).Methods("POST")
-	r.HandleFunc("/movies", AllMoviesEndPoint).Methods("GET")
-	//r.HandleFunc("/movies", CreateMovieEndPoint).Methods("POST")
-	r.HandleFunc("/movies", UpdateMovieEndPoint).Methods("PUT")
-	r.HandleFunc("/movies", DeleteMovieEndPoint).Methods("DELETE")
-	//r.HandleFunc("/movies/{id}", FindMovieEndpoint).Methods("GET")
+
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
