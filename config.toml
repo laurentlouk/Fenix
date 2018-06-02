@@ -1,2 +1,2 @@
-server="localhost:32770"
+server="localhost:32768"
 database="movies_db"

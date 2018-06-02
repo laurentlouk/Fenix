@@ -47,7 +47,7 @@ func LoginEndPoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJson(w, http.StatusOK, map[string]string{"Token": token})
+	respondWithJSON(w, http.StatusOK, map[string]string{"Token": token})
 }
 
 // AllMoviesEndPoint : GET list of movies
@@ -57,7 +57,7 @@ func AllMoviesEndPoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, movies)
+	respondWithJSON(w, http.StatusOK, movies)
 }
 
 // FindMovieEndpoint : GET a movie by its ID
@@ -68,7 +68,7 @@ func FindMovieEndpoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid Movie ID")
 		return
 	}
-	respondWithJson(w, http.StatusOK, movie)
+	respondWithJSON(w, http.StatusOK, movie)
 }
 
 // CreateMovieEndPoint : POST a new movie
@@ -84,7 +84,7 @@ func CreateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusCreated, movie)
+	respondWithJSON(w, http.StatusCreated, movie)
 }
 
 // UpdateMovieEndPoint : PUT update an existing movie
@@ -99,7 +99,7 @@ func UpdateMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 // DeleteMovieEndPoint : DELETE an existing movie
@@ -114,14 +114,14 @@ func DeleteMovieEndPoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
-	respondWithJson(w, code, map[string]string{"error": msg})
+	respondWithJSON(w, code, map[string]string{"error": msg})
 }
 
-func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
